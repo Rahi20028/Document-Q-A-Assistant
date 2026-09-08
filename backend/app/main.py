@@ -99,14 +99,22 @@ async def upload_document(file: UploadFile = File(...)):
     Supported formats: PDF, DOCX, TXT, CSV
     Max file size: 50 MB
     """
+    # --- Validate file presence & filename ---
+    if not file.filename:
+        raise HTTPException(
+            status_code=400,
+            detail="Uploaded file must have a valid filename.",
+        )
+    filename = file.filename
+
     # --- Validate file type ---
-    if not is_allowed_file(file.filename):
+    if not is_allowed_file(filename):
         raise HTTPException(
             status_code=400,
             detail=(
                 f"Unsupported file type. "
                 f"Allowed types: PDF, DOCX, TXT, CSV. "
-                f"Got: '{Path(file.filename).suffix}'"
+                f"Got: '{Path(filename).suffix}'"
             ),
         )
 
@@ -120,7 +128,7 @@ async def upload_document(file: UploadFile = File(...)):
     if len(content) == 0:
         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
-    file_ext = Path(file.filename).suffix.lower()
+    file_ext = Path(filename).suffix.lower()
 
     # --- Save to temp file (loaders require a file path) ---
     with tempfile.NamedTemporaryFile(
@@ -133,7 +141,7 @@ async def upload_document(file: UploadFile = File(...)):
     try:
         # --- Parse document ---
         try:
-            docs = load_document(tmp_path, file.filename)
+            docs = load_document(tmp_path, filename)
         except ValueError as e:
             raise HTTPException(status_code=422, detail=str(e))
         except RuntimeError as e:
@@ -150,7 +158,7 @@ async def upload_document(file: UploadFile = File(...)):
 
         # --- Embed & store ---
         file_type = file_ext.lstrip(".")
-        doc_info = embed_and_store(chunks, file.filename, file_type)
+        doc_info = embed_and_store(chunks, filename, file_type)
 
     finally:
         # Always clean up temp file
@@ -162,7 +170,7 @@ async def upload_document(file: UploadFile = File(...)):
     return UploadResponse(
         success=True,
         document=doc_info,
-        message=f"Successfully indexed '{file.filename}' ({doc_info.chunk_count} chunks).",
+        message=f"Successfully indexed '{filename}' ({doc_info.chunk_count} chunks).",
     )
 
 

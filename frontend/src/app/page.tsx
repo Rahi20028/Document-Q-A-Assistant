@@ -73,9 +73,6 @@ export default function Home() {
               <h1 className="font-serif-title text-base sm:text-lg font-medium tracking-tight text-[#EBF1F7]">
                 Document Q&amp;A Assistant
               </h1>
-              <span className="hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full bg-[#1C2A38] border border-[#22303E] text-[#8295A8]">
-                Atelier
-              </span>
             </div>
             <p className="text-[11px] text-[#8295A8] tracking-normal font-sans">
               Calm reading &amp; synthesis with Groq &amp; LangChain

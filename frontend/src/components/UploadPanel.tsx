@@ -124,7 +124,6 @@ export default function UploadPanel({ onDocumentsChange }: Props) {
       setIsDragging(false);
       handleFiles(e.dataTransfer.files);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 

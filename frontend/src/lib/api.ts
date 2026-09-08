@@ -1,8 +1,3 @@
-/**
- * Typed API client for the FastAPI RAG backend (http://localhost:8000).
- * All functions throw on non-2xx responses with a human-readable message.
- */
-
 import type {
   AskRequest,
   AskResponse,
